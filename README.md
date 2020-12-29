@@ -1,7 +1,7 @@
 # Zadání
 - Navrhnout databázi a vytvořit aplikaci v javě, která bude umožňovat objednání na různé testy k doktorovi
 - Požadavky 
- - - Pacient se objednává na konkrétní čas
+ -  Pacient se objednává na konkrétní čas
  - Pacient může mít mnoho testů
  - Doktor poskytuje mnoho testů
  - Doktor má svou pracovnu, která může být sdílená i s jinými doktory

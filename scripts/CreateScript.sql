@@ -1,5 +1,5 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2020-12-29 11:27:49.943
+-- Last modification date: 2020-12-29 11:53:14.962
 
 -- tables
 -- Table: Booking
@@ -48,6 +48,7 @@ CREATE TABLE Pacient (
     Name nvarchar(30)  NOT NULL,
     Surname nvarchar(30)  NOT NULL,
     PersonalIdentifier nvarchar(11)  NOT NULL,
+    CONSTRAINT PersonalIdentifier UNIQUE (PersonalIdentifier),
     CONSTRAINT Pacient_pk PRIMARY KEY  (Id)
 );
 

@@ -6,7 +6,7 @@
   - Doktor poskytuje mnoho testů
   - Doktor má svou pracovnu, která může být sdílená i s jinými doktory
 # Schéma
-
+![alt text](https://github.com/HoncMarek/DBS/blob/main/Scheme.png?raw=true)
 # DLL Skript
 - Ve složce scripts
 - Chtěné chování

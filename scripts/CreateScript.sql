@@ -1,5 +1,5 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2020-12-29 11:53:14.962
+-- Last modification date: 2020-12-29 12:36:44.725
 
 -- tables
 -- Table: Booking
@@ -10,6 +10,7 @@ CREATE TABLE Booking (
     StartsAt datetime  NOT NULL,
     Paid bit  NOT NULL,
     IsPositive bit  NOT NULL,
+    CONSTRAINT UniqueBooking UNIQUE (DoctorToTestId, PacientId),
     CONSTRAINT Booking_pk PRIMARY KEY  (Id)
 );
 
@@ -28,6 +29,7 @@ CREATE TABLE DoctorToTest (
     Id int  NOT NULL IDENTITY,
     TestId int  NOT NULL,
     DoctorId int  NOT NULL,
+    CONSTRAINT UniqueDoctorToTest UNIQUE (TestId, DoctorId),
     CONSTRAINT DoctorToTest_pk PRIMARY KEY  (Id)
 );
 

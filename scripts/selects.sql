@@ -1,8 +1,12 @@
 -- 1) Select in select - Pacienti a počet jejich rezervací
 select Name, Surname, BookingCount = (select count(*) from Booking B where B.PacientId = P.Id) from Pacient P
 
--- 2) Select ve from
-
+-- 2) Select ve from - Lidi co byly někdy na testu a vyšel pozitivní (tzn. lidi co prodělali covid)
+SELECT DISTINCT Name, PositiveGuys.Id
+FROM (SELECT Id
+	  FROM Booking
+	  WHERE IsPositive = 1) AS PositiveGuys, Pacient
+WHERE Pacient.Id = PositiveGuys.Id
 
 -- 3) Vnořený select ve where - všichni doktoři, kteří nemají pro daný den žádnou rezervaci.
 select Id, D.Name, D.Surname from Doctor D 

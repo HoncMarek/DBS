@@ -2,12 +2,12 @@ package semestral_project.app.providers;
 
 import semestral_project.app.dbconnect.DbConnector;
 import semestral_project.app.entities.Doctor;
+import semestral_project.app.entities.Pacient;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static semestral_project.utils.ScannerUtils.readString;
 
@@ -123,6 +123,89 @@ public class DoctorProvider implements IProvider<Doctor> {
             {
                 Doctor doctor = Doctor.FromResultSet(rs);
                 result.add(doctor);
+            }
+        } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    /**
+     * Vrací všechny doktory, kteří nemají pro daný den žádnou rezervaci.
+     */
+    public List<Doctor> getDoctorsWithNoReservationForDate(Date date) {
+        Calendar cal = Calendar.getInstance(); // locale-specific
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        java.sql.Date from = new java.sql.Date(cal.getTimeInMillis());
+        cal.add(Calendar.DATE, 1);
+        java.sql.Date to = new java.sql.Date(cal.getTimeInMillis());
+
+        // Vnořený select ve where - všichni doktoři, kteří nemají pro daný den žádnou rezervaci.
+        String sql = "select D.* from Doctor D  where Id not in ( select DTT.DoctorId from Booking B join DoctorToTest DTT on DTT.Id = B.DoctorToTestId where B.StartsAt > ? and B.StartsAt < ? group by DTT.DoctorId)"; // Query pro získání všech záznamů z tabulky Doctor.
+
+        List<Doctor> result = new ArrayList<>(); // Připravím si proměnnou pro záznamy z DB.
+
+        PreparedStatement statement = this.conn.prepare(sql); // Připravím si statement, který budu pouštět na DB.
+        try {
+            statement.setDate(1, from);
+            statement.setDate(2, to);
+
+            ResultSet rs = statement.executeQuery(); // Spustím dotaz na DB.
+
+            while (rs.next()) // Parsuju jednotlivé řádky z DB, dokud jsou dostupné.
+            {
+                Doctor doctor = Doctor.FromResultSet(rs);
+                result.add(doctor);
+            }
+        } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    /**
+     * Vrací počet rezervací všech doktorů pro daný den, kteří mají alespoň jednu.
+     */
+    public Dictionary<Doctor, Integer> getDoctorsReservationCountForDay(Date date) {
+        Calendar cal = Calendar.getInstance(); // locale-specific
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        java.sql.Date from = new java.sql.Date(cal.getTimeInMillis());
+        cal.add(Calendar.DATE, 1);
+        java.sql.Date to = new java.sql.Date(cal.getTimeInMillis());
+        String sql = "select DTT.DoctorId, [Count] = count(DTT.DoctorId) from Booking B join DoctorToTest DTT on DTT.Id = B.DoctorToTestId where B.StartsAt > ? and B.StartsAt < ? group by DTT.DoctorId";
+
+        Dictionary<Doctor, Integer> result = new Hashtable<Doctor, Integer>();
+
+        PreparedStatement statement = this.conn.prepare(sql); // Připravím si statement, který budu pouštět na DB.
+
+        List<Doctor> allDoctors = getAll();
+
+        try {
+            statement.setDate(1, from);
+            statement.setDate(2, to);
+
+            ResultSet rs = statement.executeQuery(); // Spustím dotaz na DB.
+
+            while (rs.next()) // Parsuju jednotlivé řádky z DB, dokud jsou dostupné.
+            {
+                int doctorId = rs.getInt("DoctorId");
+                int count = rs.getInt("Count");
+
+                Doctor doctor = allDoctors.stream().filter(d -> d.getId() == doctorId).findFirst().get();
+
+                result.put(doctor, count);
             }
         } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
             e.printStackTrace();

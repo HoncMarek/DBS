@@ -6,9 +6,7 @@ import semestral_project.app.entities.Pacient;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static semestral_project.utils.ScannerUtils.readString;
 
@@ -123,6 +121,57 @@ public class PacientProvider implements IProvider<Pacient>{
             {
                 Pacient pacient = Pacient.FromResultSet(rs);
                 result.add(pacient);
+            }
+        } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    /**
+     * Vrací všechny pacienty pozitivní na kouvid.
+     */
+    public List<Pacient> getPositivePacients() {
+        // Query pro získání všech pacientů pozitivních na COVID
+        String sql = "SELECT DISTINCT Pacient.* FROM (SELECT Id FROM Booking WHERE IsPositive = 1) AS PositiveGuys, Pacient WHERE Pacient.Id = PositiveGuys.Id";
+
+        List<Pacient> result = new ArrayList<>(); // Připravím si proměnnou pro záznamy z DB.
+
+        PreparedStatement statement = this.conn.prepare(sql); // Připravím si statement, který budu pouštět na DB.
+        try {
+            ResultSet rs = statement.executeQuery(); // Spustím dotaz na DB.
+
+            while (rs.next()) // Parsuju jednotlivé řádky z DB, dokud jsou dostupné.
+            {
+                Pacient pacient = Pacient.FromResultSet(rs);
+                result.add(pacient);
+            }
+        } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    /**
+     * Vrací počet rezervací každého pacienta.
+     */
+    public Dictionary<Pacient, Integer> getPacientsReservationCount() {
+        String sql = "select P.*, [Count] = (select count(*) from Booking B where B.PacientId = P.Id) from Pacient PA";
+
+        Dictionary<Pacient, Integer> result = new Hashtable<Pacient, Integer>();
+
+        PreparedStatement statement = this.conn.prepare(sql); // Připravím si statement, který budu pouštět na DB.
+
+        try {
+            ResultSet rs = statement.executeQuery(); // Spustím dotaz na DB.
+
+            while (rs.next()) // Parsuju jednotlivé řádky z DB, dokud jsou dostupné.
+            {
+                Pacient pacient = Pacient.FromResultSet(rs);
+                int count = rs.getInt("Count");
+                result.put(pacient, count);
             }
         } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
             e.printStackTrace();

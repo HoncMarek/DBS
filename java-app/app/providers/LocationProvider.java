@@ -134,6 +134,32 @@ public class LocationProvider implements IProvider<Location> {
         return result;
     }
 
+    /**
+     * Vrací všechny záznamy o místech.
+     */
+    public List<Location> getCovidCheckpointsFromCity(String city) {
+        String sql = "select L.* from Location L where City like ? intersect select L.* from Location L where Id in (select D.LocationId from Test T join DoctorToTest DTT on DTT.TestId = T.Id join Doctor D on DTT.DoctorId = D.Id where T.Name like 'PCR' or T.Name like 'Antigen')";
+
+        List<Location> result = new ArrayList<>(); // Připravím si proměnnou pro záznamy z DB.
+
+        PreparedStatement statement = this.conn.prepare(sql); // Připravím si statement, který budu pouštět na DB.
+        try {
+            statement.setString(1, city);
+
+            ResultSet rs = statement.executeQuery(); // Spustím dotaz na DB.
+
+            while (rs.next()) // Parsuju jednotlivé řádky z DB, dokud jsou dostupné.
+            {
+                Location location = Location.FromResultSet(rs);
+                result.add(location);
+            }
+        } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     @Override
     public Location dummy() {
         Location dummy = new Location();

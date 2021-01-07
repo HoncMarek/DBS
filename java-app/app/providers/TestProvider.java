@@ -1,14 +1,14 @@
 package semestral_project.app.providers;
 
 import semestral_project.app.dbconnect.DbConnector;
+import semestral_project.app.entities.Doctor;
+import semestral_project.app.entities.Pacient;
 import semestral_project.app.entities.Test;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static semestral_project.utils.ScannerUtils.*;
 
@@ -124,6 +124,34 @@ public class TestProvider implements IProvider<Test> {
             {
                 Test test = Test.FromResultSet(rs);
                 result.add(test);
+            }
+        } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    /**
+     * Vrací seznam všech testů a jací doktoři je provádí.
+     */
+    public Dictionary<Test, Doctor> getAllTestToDoctorCombinations() {
+        String sql = "select T.Id, T.Name as 'TestName', T.Description, T.Price, T.Length, D.Name, D.* from Test T left join DoctorToTest DTT on DTT.TestId = T.Id left join Doctor D on D.Id = DTT.DoctorId";
+
+        Dictionary<Test, Doctor> result = new Hashtable<Test, Doctor>();
+
+        PreparedStatement statement = this.conn.prepare(sql); // Připravím si statement, který budu pouštět na DB.
+
+        try {
+            ResultSet rs = statement.executeQuery(); // Spustím dotaz na DB.
+
+            while (rs.next()) // Parsuju jednotlivé řádky z DB, dokud jsou dostupné.
+            {
+                Test test = Test.FromResultSet(rs);
+                test.setName(rs.getString("TestName"));
+
+                Doctor doctor = Doctor.FromResultSet(rs);
+                result.put(test, doctor);
             }
         } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
             e.printStackTrace();

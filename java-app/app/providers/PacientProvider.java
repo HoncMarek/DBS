@@ -157,10 +157,10 @@ public class PacientProvider implements IProvider<Pacient>{
     /**
      * Vrací počet rezervací každého pacienta.
      */
-    public Dictionary<Pacient, Integer> getPacientsReservationCount() {
-        String sql = "select P.*, [Count] = (select count(*) from Booking B where B.PacientId = P.Id) from Pacient PA";
+    public Map<Pacient, Integer> getPacientsReservationCount() {
+        String sql = "select P.*, [Count] = (select count(*) from Booking B where B.PacientId = P.Id) from Pacient P";
 
-        Dictionary<Pacient, Integer> result = new Hashtable<Pacient, Integer>();
+        Map<Pacient, Integer> result = new Hashtable<Pacient, Integer>();
 
         PreparedStatement statement = this.conn.prepare(sql); // Připravím si statement, který budu pouštět na DB.
 

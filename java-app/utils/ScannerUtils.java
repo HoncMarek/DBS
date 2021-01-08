@@ -103,8 +103,6 @@ public class ScannerUtils {
     public static boolean readBoolean(Scanner sc, String msg, String trueValue) {
         String input = readString(sc, msg);
 
-        boolean result = input == trueValue;
-
-        return result;
+        return input.equals(trueValue);
     }
 }

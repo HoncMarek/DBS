@@ -1,11 +1,19 @@
 package semestral_project.ui;
 
 import semestral_project.app.dbconnect.DbConnector;
+import semestral_project.app.entities.Doctor;
+import semestral_project.app.entities.Location;
+import semestral_project.app.entities.Pacient;
+import semestral_project.app.entities.Test;
 import semestral_project.app.providers.*;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import static semestral_project.utils.ScannerUtils.readInt;
+import static semestral_project.utils.ScannerUtils.readString;
 
 public class main {
 
@@ -74,12 +82,34 @@ public class main {
     public static void pacientSubmenu(Scanner sc, PacientProvider provider) {
         while(true) { // Hlavní smyčka podprogramu pro manipulaci s tabulkou Pacient.
             printCommonFunctionsSubmenu(); // Vypíšu hlavní menu (funkce společné pro všechny tabulky).
+            System.out.println("6) Pacienti a počet jejich rezervací\n" +
+                    "7) Pozitivní pacienti\n"
+            );
 
             int option = readInt(sc, "Vaše volba: "); // Zjistím volbu uživatele.
 
-            if (!handleCommonFunctionsSubmenu(option, sc, provider)) { // Pokud zvolená operace nebyla jednou ze společných.
-                return; // Ukončuji, jiné operace totiž nemám.
+            // Předám zpracování volby handleru pro společné operace.
+            if (handleCommonFunctionsSubmenu(option, sc, provider)) {
+                continue;
             }
+
+            switch (option) {
+                case 6:
+                    for ( Map.Entry<Pacient, Integer> pair : provider.getPacientsReservationCount().entrySet()) {
+                        System.out.println(pair.getKey().toString());
+                        System.out.println("Počet rezervací: " + pair.getValue() + "\n");
+                    }
+                    break;
+                case 7:
+                    for (Pacient pacient: provider.getPositivePacients()) {
+                        System.out.println(pacient.toString());
+                    }
+                    break;
+                default:
+                    return;
+            }
+
+            System.out.println();
         }
     }
 
@@ -94,8 +124,9 @@ public class main {
 
             int option = readInt(sc, "Vaše volba: "); // Zjistím volbu uživatele.
 
-            if (!handleCommonFunctionsSubmenu(option, sc, provider)) { // Pokud zvolená operace nebyla jednou ze společných.
-                return; // Ukončuji, jiné operace totiž nemám.
+            // Předám zpracování volby handleru pro společné operace.
+            if (handleCommonFunctionsSubmenu(option, sc, provider)) {
+                return;
             }
         }
     }
@@ -108,12 +139,60 @@ public class main {
     public static void doctorSubmenu(Scanner sc, DoctorProvider provider) {
         while(true) { // Hlavní smyčka podprogramu pro manipulaci s tabulkou Pacient.
             printCommonFunctionsSubmenu(); // Vypíšu hlavní menu (funkce společné pro všechny tabulky).
+            System.out.println("6) Všichni doktoři, kteří nemají dnes rezervace\n" +
+                    "7) Výčet počtu rezervací pro tento den\n" +
+                    "8) Přidat doktorovi test\n"
+            );
 
             int option = readInt(sc, "Vaše volba: "); // Zjistím volbu uživatele.
 
-            if (!handleCommonFunctionsSubmenu(option, sc, provider)) { // Pokud zvolená operace nebyla jednou ze společných.
-                return; // Ukončuji, jiné operace totiž nemám.
+            // Předám zpracování volby handleru pro společné operace.
+            if (handleCommonFunctionsSubmenu(option, sc, provider)) {
+                continue;
             }
+
+            switch (option) {
+                case 6:
+                    for (Doctor doctor : provider.getDoctorsWithNoReservationForDate(new Date())) {
+                        System.out.println(doctor.toString());
+                    }
+                    break;
+                case 7:
+                    for (Map.Entry<Doctor, Integer> pair : provider.getDoctorsReservationCountForDay(new Date()).entrySet()) {
+                        System.out.println(pair.getKey().toString());
+                        System.out.println("Počet dnešních rezervací: " + pair.getValue() + "\n");
+                    }
+                    break;
+
+                case 8:
+                    int doctorId = readInt(sc, "Zadejte Id doktora: ");
+                    int testId = readInt(sc, "Zadejte Id testu: ");
+
+                    Doctor doctor = provider.getById(doctorId);
+
+                    if (doctor != null) {
+                        System.out.println("Zvoleno: " + doctor.toString());
+
+                       Test test = TestProvider.instance().getById(testId);
+
+                       if (test != null) {
+                           provider.addTestToDoctor(doctor, test);
+                           break;
+                       }
+                       else {
+                           System.out.println("Záznam neexistuje!");
+                       }
+                    }
+                    else {
+                        System.out.println("Záznam neexistuje!");
+                    }
+
+                    break;
+                default:
+                    return;
+            }
+
+            System.out.println();
         }
     }
 
@@ -125,12 +204,28 @@ public class main {
     public static void locationSubmenu(Scanner sc, LocationProvider provider) {
         while(true) { // Hlavní smyčka podprogramu pro manipulaci s tabulkou Pacient.
             printCommonFunctionsSubmenu(); // Vypíšu hlavní menu (funkce společné pro všechny tabulky).
+            System.out.println("6) Odběrová místa podle názvu města");
 
             int option = readInt(sc, "Vaše volba: "); // Zjistím volbu uživatele.
 
-            if (!handleCommonFunctionsSubmenu(option, sc, provider)) { // Pokud zvolená operace nebyla jednou ze společných.
-                return; // Ukončuji, jiné operace totiž nemám.
+            // Předám zpracování volby handleru pro společné operace.
+            if (handleCommonFunctionsSubmenu(option, sc, provider)) {
+                continue;
             }
+
+            switch (option) {
+                case 6:
+                    String city = readString(sc, "Zadejte město: ");
+
+                    for (Location location : provider.getCovidCheckpointsFromCity(city)) {
+                        System.out.println(location.toString());
+                    }
+                    break;
+                default:
+                    return;
+            }
+
+            System.out.println();
         }
     }
 
@@ -142,12 +237,32 @@ public class main {
     public static void testSubmenu(Scanner sc, TestProvider provider) {
         while(true) { // Hlavní smyčka podprogramu pro manipulaci s tabulkou Pacient.
             printCommonFunctionsSubmenu(); // Vypíšu hlavní menu (funkce společné pro všechny tabulky).
+            System.out.println("6) Seznam všech testů a jací doktoři jej provádí\n");
 
             int option = readInt(sc, "Vaše volba: "); // Zjistím volbu uživatele.
 
-            if (!handleCommonFunctionsSubmenu(option, sc, provider)) { // Pokud zvolená operace nebyla jednou ze společných.
-                return; // Ukončuji, jiné operace totiž nemám.
+            // Předám zpracování volby handleru pro společné operace.
+            if (handleCommonFunctionsSubmenu(option, sc, provider)) {
+                continue;
             }
+
+            switch (option) {
+                case 6:
+                    for (Map.Entry<Test, List<Doctor>> pair : provider.getAllTestToDoctorCombinations().entrySet()) {
+                        System.out.println("[" +pair.getKey().toString() + "]\n---------------------------------------------------------------");
+
+                        for (Doctor doctor : pair.getValue()) {
+                            System.out.println(doctor.toString());
+                        }
+
+                        System.out.println("\n");
+                    }
+                    break;
+                default:
+                    return;
+            }
+
+            System.out.println();
         }
     }
 
@@ -156,6 +271,7 @@ public class main {
      */
     public static void printCommonFunctionsSubmenu() {
         System.out.println("Zvolte jakou akci chcete provést. \n" +
+                "ostatní) Hlavní menu\n" +
                 "1) Zobrazit všechny záznamy \n" +
                 "2) Zobrazit konkrétní záznam \n" +
                 "3) Přidat nový záznam \n" +
@@ -180,7 +296,13 @@ public class main {
                     int id = readInt(sc, "Zadejte Id záznamu: ");
                     if (id > 0){
                        TEntity entity = provider.getById(id);
-                       System.out.println(entity.toString() + "\n");
+
+                       if (entity != null) {
+                           System.out.println(entity.toString() + "\n");
+                       }
+                       else {
+                           System.out.println("Záznam se zadaným Id neexistuje.");
+                       }
                     }
                     break;
                 case 3: // Vytvoření nového záznamu.
@@ -204,7 +326,14 @@ public class main {
                     if (id > 0){
                         entity = provider.getById(id);
                         System.out.println("Zvolený záznam: ");
-                        System.out.println(entity.toString() + "\n");
+
+                        if (entity != null) {
+                            System.out.println(entity.toString() + "\n");
+                        }
+                        else {
+                           System.out.println("Záznam se zadaným Id neexistuje.");
+                        }
+
                         System.out.println();
 
                         if (readInt(sc, "Pro potvrzení zadejte 1: ") == 1) {

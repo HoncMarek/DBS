@@ -135,10 +135,10 @@ public class TestProvider implements IProvider<Test> {
     /**
      * Vrací seznam všech testů a jací doktoři je provádí.
      */
-    public Dictionary<Test, Doctor> getAllTestToDoctorCombinations() {
+    public Map<Test, List<Doctor>> getAllTestToDoctorCombinations() {
         String sql = "select T.Id, T.Name as 'TestName', T.Description, T.Price, T.Length, D.Name, D.* from Test T left join DoctorToTest DTT on DTT.TestId = T.Id left join Doctor D on D.Id = DTT.DoctorId";
 
-        Dictionary<Test, Doctor> result = new Hashtable<Test, Doctor>();
+        Map<Test, List<Doctor>> result = new Hashtable<>();
 
         PreparedStatement statement = this.conn.prepare(sql); // Připravím si statement, který budu pouštět na DB.
 
@@ -151,7 +151,12 @@ public class TestProvider implements IProvider<Test> {
                 test.setName(rs.getString("TestName"));
 
                 Doctor doctor = Doctor.FromResultSet(rs);
-                result.put(test, doctor);
+
+                if (!result.containsKey(test)) {
+                    result.put(test, new ArrayList<>());
+                }
+
+                result.get(test).add(doctor);
             }
         } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
             e.printStackTrace();

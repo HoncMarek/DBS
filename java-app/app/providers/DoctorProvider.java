@@ -3,12 +3,14 @@ package semestral_project.app.providers;
 import semestral_project.app.dbconnect.DbConnector;
 import semestral_project.app.entities.Doctor;
 import semestral_project.app.entities.Pacient;
+import semestral_project.app.entities.Test;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static semestral_project.utils.ScannerUtils.readInt;
 import static semestral_project.utils.ScannerUtils.readString;
 
 
@@ -32,6 +34,7 @@ public class DoctorProvider implements IProvider<Doctor> {
             statement.setString(1, doctor.getName());
             statement.setString(2, doctor.getSurname());
             statement.setString(3, doctor.getTitle());
+            statement.setInt(4, doctor.getLocationId());
 
             result = statement.execute(); // Spustím dotaz na DB.
         } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
@@ -135,7 +138,7 @@ public class DoctorProvider implements IProvider<Doctor> {
      * Vrací všechny doktory, kteří nemají pro daný den žádnou rezervaci.
      */
     public List<Doctor> getDoctorsWithNoReservationForDate(Date date) {
-        Calendar cal = Calendar.getInstance(); // locale-specific
+        Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
@@ -173,7 +176,7 @@ public class DoctorProvider implements IProvider<Doctor> {
     /**
      * Vrací počet rezervací všech doktorů pro daný den, kteří mají alespoň jednu.
      */
-    public Dictionary<Doctor, Integer> getDoctorsReservationCountForDay(Date date) {
+    public Map<Doctor, Integer> getDoctorsReservationCountForDay(Date date) {
         Calendar cal = Calendar.getInstance(); // locale-specific
         cal.setTime(date);
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -186,7 +189,7 @@ public class DoctorProvider implements IProvider<Doctor> {
         java.sql.Date to = new java.sql.Date(cal.getTimeInMillis());
         String sql = "select DTT.DoctorId, [Count] = count(DTT.DoctorId) from Booking B join DoctorToTest DTT on DTT.Id = B.DoctorToTestId where B.StartsAt > ? and B.StartsAt < ? group by DTT.DoctorId";
 
-        Dictionary<Doctor, Integer> result = new Hashtable<Doctor, Integer>();
+        Map<Doctor, Integer> result = new Hashtable<Doctor, Integer>();
 
         PreparedStatement statement = this.conn.prepare(sql); // Připravím si statement, který budu pouštět na DB.
 
@@ -214,6 +217,25 @@ public class DoctorProvider implements IProvider<Doctor> {
         return result;
     }
 
+    public boolean addTestToDoctor(Doctor doctor, Test test) {
+        String sql = "INSERT INTO DoctorToTest(TestId, DoctorId) VALUES(?,?)";
+
+        boolean result = false;
+
+        PreparedStatement statement = this.conn.prepare(sql); // Připravím si statement, který budu pouštět na DB.
+
+        try {
+            statement.setInt(1, doctor.getId());
+            statement.setInt(2, test.getId());
+
+            result = statement.execute(); // Spustím dotaz na DB.
+        } catch (SQLException e) { // Musím počítat s tím, že JDBC může vyhodit výjimku.
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     @Override
     public Doctor dummy() {
         Doctor dummy = new Doctor();
@@ -224,7 +246,8 @@ public class DoctorProvider implements IProvider<Doctor> {
     public void edit(Doctor entity, Scanner sc) {
         entity.setName(readString(sc, "Křestní jméno: "));
         entity.setSurname(readString(sc, "Příjmení: "));
-        entity.setSurname(readString(sc, "Titul: "));
+        entity.setTitle(readString(sc, "Titul: "));
+        entity.setLocationId(readInt(sc, "Id místa: "));
     }
 
     /**

@@ -144,7 +144,7 @@ public class LocationProvider implements IProvider<Location> {
 
         PreparedStatement statement = this.conn.prepare(sql); // Připravím si statement, který budu pouštět na DB.
         try {
-            statement.setString(1, city);
+            statement.setString(1, "%" + city + "%");
 
             ResultSet rs = statement.executeQuery(); // Spustím dotaz na DB.
 

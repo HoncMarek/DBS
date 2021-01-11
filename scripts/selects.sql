@@ -11,10 +11,9 @@ WHERE Pacient.Id = PositiveGuys.Id
 -- 3) Vnořený select ve where - všichni doktoři, kteří nemají pro daný den žádnou rezervaci.
 select D.* from Doctor D 
 where Id not in (
-	select DTT.DoctorId from Booking B 
+	select distinct DTT.DoctorId from Booking B 
 	join DoctorToTest DTT on DTT.Id = B.DoctorToTestId
 	where B.StartsAt > '2020-12-29' and B.StartsAt < '2020-12-30'
-	group by DTT.DoctorId
 )
 
 -- 4) Group by - počet rezervací všech doktorů pro daný den, kteří mají alespoň jednu

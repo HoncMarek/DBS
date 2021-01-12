@@ -1,69 +1,69 @@
 INSERT INTO Pacient(Name, Surname, PersonalIdentifier)
 VALUES
-    ('Frantiöek', 'Nov·k', '001017/3834'),
-    ('Pepa', 'Novotn˝', '001017/3845'),
-    ('Marek', 'Nov˝', '001017/3856'),
-    ('Karel', 'Modr˝', '001017/3867'),
-	('Martin', '»erven˝', '001017/3878'),
-	('Bruno', 'Zelen˝', '001017/3889'),
-	('Pavel', 'Fialov˝', '001017/4934'),
-	('Jirka', 'BÈûov˝', '001017/6034'),
-	('Jaroslav', '»ern˝', '001017/7134'),
-	('David', 'BÌl˝', '001017/8234')
+    ('Franti≈°ek', 'Nov√°k', '001017/3834'),
+    ('Pepa', 'Novotn√Ω', '001017/3845'),
+    ('Marek', 'Nov√Ω', '001017/3856'),
+    ('Karel', 'Modr√Ω', '001017/3867'),
+	('Martin', 'ƒåerven√Ω', '001017/3878'),
+	('Bruno', 'Zelen√Ω', '001017/3889'),
+	('Pavel', 'Fialov√Ω', '001017/4934'),
+	('Jirka', 'B√©≈æov√Ω', '001017/6034'),
+	('Jaroslav', 'ƒåern√Ω', '001017/7134'),
+	('David', 'B√≠l√Ω', '001017/8234')
 
 INSERT INTO [Location](Name, City, Street, OpenedFrom, OpenedTo)
 VALUES 
-	('KNL', 'Liberec', 'N·draûnÌ 5', '7:00', '13:00'),
-	('Soukrom· klinika','Liberec', 'Husova 5', '8:00', '13:00'),
-	('Ve¯ejn· klinika','Liberec', 'Zeyerova 5', '9:00', '15:00'),
-	('nemjbc','Jablonec nad Nisou', 'N·draûnÌ 69', '5:00', '10:00'),
-	('Soukrom· klinika JBC','Jablonec nad Nisou', 'Nov· 7', '7:00', '13:00'),
-	('PoboËka KNL - JBC','Jablonec nad Nisou', 'Libereck· 7', '11:00', '13:00'),
-	('PoboËka KNL - Turnov','Turnov', 'N·draûnÌ 7', '4:00', '8:00'),
-	('PrvnÌ turnovsk· nemocnice','Turnov', 'Libereck· 3', '14:00', '20:00'),
-	('nemtur','Turnov', 'Star· 34', '7:00', '13:00'),
-	('nemcl','»esk· LÌpa', 'N·draûnÌ 16', '7:00', '13:00')
+	('KNL', 'Liberec', 'N√°dra≈æn√≠ 5', '7:00', '13:00'),
+	('Soukrom√° klinika','Liberec', 'Husova 5', '8:00', '13:00'),
+	('Ve√∏ejn√° klinika','Liberec', 'Zeyerova 5', '9:00', '15:00'),
+	('nemjbc','Jablonec nad Nisou', 'N√°dra≈æn√≠ 69', '5:00', '10:00'),
+	('Soukrom√° klinika JBC','Jablonec nad Nisou', 'Nov√° 7', '7:00', '13:00'),
+	('Pobo√®ka KNL - JBC','Jablonec nad Nisou', 'Libereck√° 7', '11:00', '13:00'),
+	('Pobo√®ka KNL - Turnov','Turnov', 'N√°dra≈æn√≠ 7', '4:00', '8:00'),
+	('Prvn√≠ turnovsk√° nemocnice','Turnov', 'Libereck√° 3', '14:00', '20:00'),
+	('nemtur','Turnov', 'Star√° 34', '7:00', '13:00'),
+	('nemcl','ƒåesk√° L√≠pa', 'N√°dra≈æn√≠ 16', '7:00', '13:00')
 
 INSERT INTO Doctor(Name, Surname, Title, LocationId)
 VALUES 
-	-- Ten select nenÌ sice 100%, protoûe kdyû budou mÌt 2 lokace stejn· jmÈna tak to vezme prvnÌ, ale jedn· se jenom o testovacÌ data.
+	-- Ten select nen√≠ sice 100%, proto≈æe kdy≈æ budou m√≠t 2 lokace stejn√° jm√©na tak to vezme prvn√≠, ale jedn√° se jenom o testovac√≠ data.
 	('Marek', 'Honc', 'Doc', (Select top 1 Id from [Location] where Name Like 'KNL')),
 	('Bruno', 'Pfohl', 'Mgr', (Select top 1 Id from [Location] where Name Like 'KNL')),
-	('Martin', 'H·jek', 'Mgr', (Select top 1 Id from [Location] where Name Like 'nemtur')),
-	('Nat·lie', 'Novotn·', 'Mgr', (Select Id from [Location] where Name Like 'Soukrom· klinika')),
-	('KarolÌna', 'Hust·', 'Mgr', (Select top 1 Id from [Location] where Name Like 'Ve¯ejn· klinika')),
-	('Lucie', 'Drsn·', 'Doc', (Select top 1 Id from [Location] where Name Like 'nemjbc')),
-	('Frajer', 'Sprajer', 'Mgr', (Select top 1 Id from [Location] where Name Like 'Soukrom· klinika JBC')),
-	('Eva', 'EviËka', 'Mgr', (Select top 1 Id from [Location] where Name Like 'PoboËka KNL - JBC')),
+	('Martin', 'H√°jek', 'Mgr', (Select top 1 Id from [Location] where Name Like 'nemtur')),
+	('Nat√°lie', 'Novotn√°', 'Mgr', (Select Id from [Location] where Name Like 'Soukrom√° klinika')),
+	('Karol√≠na', 'Hust√°', 'Mgr', (Select top 1 Id from [Location] where Name Like 'Ve√∏ejn√° klinika')),
+	('Lucie', 'Drsn√°', 'Doc', (Select top 1 Id from [Location] where Name Like 'nemjbc')),
+	('Frajer', 'Sprajer', 'Mgr', (Select top 1 Id from [Location] where Name Like 'Soukrom√° klinika JBC')),
+	('Eva', 'Eviƒçka', 'Mgr', (Select top 1 Id from [Location] where Name Like 'Pobo√®ka KNL - JBC')),
 	('Pepa', 'Doktor', 'Mgr', (Select top 1 Id from [Location] where Name Like 'nemcl')),
 	('Ahmed', 'Arthur', 'Mgr', (Select top 1 Id from [Location] where Name Like 'KNL'))
 
 INSERT INTO Test(Name, Description, Price, Length)
 VALUES 
-	-- Nejsem doktor - neruöÌm za p¯esnost ˙daj˘ ale pro testov·nÌ postaËujÌcÌ.
+	-- Nejsem doktor - neru≈°√≠m za p√∏esnost √∫daj√π ale pro testov√°n√≠ posta√®uj√≠c√≠.
 	('PCR', 'Covid - test', 2256, 10),
-	('Antigen', 'Covid - test - antigennÌ', 0, 10),
+	('Antigen', 'Covid - test - antigenn√≠', 0, 10),
 	('Alzheimer', null, 1500, 30),
-	('KrevnÌ test', 'OdbÏr krve', 250, 5),
-	('TÏhotensk˝ test', null, 500, 10),
+	('Krevn√≠ test', 'Odbƒõr krve', 250, 5),
+	('Tƒõhotensk√Ω test', null, 500, 10),
 	('HIV', null, 1500, 45),
 	('Wegener', null, 2000, 60),
-	('Rakovina', 'Vyöet¯enÌ podle podezd¯enÌ', 5000, 120),
-	('éluËovÈ kameny', null, 900, 15),
-	('Roztrouöen· sklerÛza', null, 15000, 10)
+	('Rakovina', 'Vy≈°et√∏en√≠ podle podezd√∏en√≠', 5000, 120),
+	('≈Ωluƒçov√© kameny', null, 900, 15),
+	('Roztrou≈°en√° skler√≥za', null, 15000, 10)
 
 INSERT INTO DoctorToTest(TestId, DoctorId)
 VALUES
--- Ten select nenÌ sice 100%, protoûe kdyû podmÌnce vyhovÌ vÌce z·znam˘ vezme se prvnÌ, ale jedn· se jenom o testovacÌ data.
+-- Ten select nen√≠ sice 100%, proto≈æe kdy≈æ podm√≠nce vyhov√≠ v√≠ce z√°znam√π vezme se prvn√≠, ale jedn√° se jenom o testovac√≠ data.
 	((Select top 1 Id from Test where Name Like 'PCR'), (Select top 1 Id from Doctor where SurName Like 'Honc')),
 	((Select top 1 Id from Test where Name Like 'Antigen'), (Select top 1 Id from Doctor where SurName Like 'Honc')),
 	((Select top 1 Id from Test where Name Like 'Alzheimer'), (Select top 1 Id from Doctor where SurName Like 'Pfohl')),
-	((Select top 1 Id from Test where Name Like 'KrevnÌ test'), (Select top 1 Id from Doctor where SurName Like 'Pfohl')),
-	((Select top 1 Id from Test where Name Like 'PCR'), (Select top 1 Id from Doctor where SurName Like 'H·jek')),
-	((Select top 1 Id from Test where Name Like 'Alzheimer'), (Select top 1 Id from Doctor where SurName Like 'H·jek')),
-	((Select top 1 Id from Test where Name Like 'Roztrouöen· sklerÛza'), (Select top 1 Id from Doctor where SurName Like 'Novotn·')),
-	((Select top 1 Id from Test where Name Like 'HIV'), (Select top 1 Id from Doctor where SurName Like 'Hust·')),
-	((Select top 1 Id from Test where Name Like 'Wegener'), (Select top 1 Id from Doctor where SurName Like 'Drsn·')),
+	((Select top 1 Id from Test where Name Like 'Krevn√≠ test'), (Select top 1 Id from Doctor where SurName Like 'Pfohl')),
+	((Select top 1 Id from Test where Name Like 'PCR'), (Select top 1 Id from Doctor where SurName Like 'H√°jek')),
+	((Select top 1 Id from Test where Name Like 'Alzheimer'), (Select top 1 Id from Doctor where SurName Like 'H√°jek')),
+	((Select top 1 Id from Test where Name Like 'Roztrou≈°en√° skler√≥za'), (Select top 1 Id from Doctor where SurName Like 'Novotn√°')),
+	((Select top 1 Id from Test where Name Like 'HIV'), (Select top 1 Id from Doctor where SurName Like 'Hust√°')),
+	((Select top 1 Id from Test where Name Like 'Wegener'), (Select top 1 Id from Doctor where SurName Like 'Drsn√°')),
 	((Select top 1 Id from Test where Name Like 'Rakovina'), (Select top 1 Id from Doctor where SurName Like 'Sprajer'))
 
 Insert INTO Booking(DoctorToTestId, PacientId, StartsAt, Paid, IsPositive)
@@ -74,17 +74,17 @@ VALUES
 		(Select top 1 Id from Pacient where PersonalIdentifier like '001017/3834'), '2020-12-29 11:50:00', 1, 0),
 	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'Alzheimer') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'Pfohl')),
 		(Select top 1 Id from Pacient where PersonalIdentifier like '001017/3845'), '2020-12-29 10:30:00', 1, 0),
-	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'KrevnÌ test') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'Pfohl')),
+	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'Krevn√≠ test') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'Pfohl')),
 		(Select top 1 Id from Pacient where PersonalIdentifier like '001017/3856'), '2020-12-29 11:00:00', 0, 1),
-	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'PCR') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'H·jek')),
+	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'PCR') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'H√°jek')),
 		(Select top 1 Id from Pacient where PersonalIdentifier like '001017/3867'), '2020-12-29 9:40:00', 0, 1),
-	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'Alzheimer') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'H·jek')),
+	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'Alzheimer') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'H√°jek')),
 		(Select top 1 Id from Pacient where PersonalIdentifier like '001017/3878'), '2020-12-29 9:50:00', 1, 1),
 	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'PCR') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'Honc')),
 		(Select top 1 Id from Pacient where PersonalIdentifier like '001017/3889'), '2020-12-30 8:30:00', 0, 0),
 	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'PCR') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'Honc')),
 		(Select top 1 Id from Pacient where PersonalIdentifier like '001017/4934'), '2020-12-29 8:40:00', 1, 1),
-	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'Roztrouöen· sklerÛza') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'Novotn·')),
+	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'Roztrou≈°en√° skler√≥za') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'Novotn√°')),
 		(Select top 1 Id from Pacient where PersonalIdentifier like '001017/6034'), '2020-12-29 8:00:00', 0, 0),
 	((Select top 1 Id from DoctorToTest where TestId = (Select top 1 Id from Test where Name Like 'Rakovina') and DoctorId = (Select top 1 Id from Doctor where SurName Like 'Sprajer')),
 		(Select top 1 Id from Pacient where PersonalIdentifier like '001017/7134'), '2020-12-29 7:40:00', 0, 1)

@@ -48,7 +48,7 @@ VALUES
 	('Těhotenský test', null, 500, 10),
 	('HIV', null, 1500, 45),
 	('Wegener', null, 2000, 60),
-	('Rakovina', 'Vyšetøení podle podezdøení', 5000, 120),
+	('Rakovina', 'Vyšetření podle podezdření', 5000, 120),
 	('Žlučové kameny', null, 900, 15),
 	('Roztroušená skleróza', null, 15000, 10)
 
